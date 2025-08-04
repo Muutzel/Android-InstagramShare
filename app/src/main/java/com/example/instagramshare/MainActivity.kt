@@ -85,12 +85,12 @@ fun ContentInSurface(modifier: Modifier = Modifier) {
 
     //Daten initial holen
     val usernameInitial = readInfosOnPhone(context).username
-    val profiltextInitial = readInfosOnPhone(context).bio
+    val bioInitial = readInfosOnPhone(context).bio
     val imageQr = painterResource(R.drawable.marcel_892__qr_orange)
 
     //Daten in Variable speichern, die sich mit der Zeit verändern
     var username by rememberSaveable { mutableStateOf(usernameInitial) }
-    var profiltext by rememberSaveable { mutableStateOf(profiltextInitial) }
+    var bio by rememberSaveable { mutableStateOf(bioInitial) }
 
     //Box 1: Hintergrund
     Box(
@@ -129,8 +129,9 @@ fun ContentInSurface(modifier: Modifier = Modifier) {
             //Infos
             PersonenInfos(
                 username = username,
-                bio = profiltext,
+                bio = bio,
                 onUsernameChanged = { username = it },
+                onBioChanged = { bio = it },
                 context = context
             )
         }
@@ -169,8 +170,9 @@ fun ContentInSurface(modifier: Modifier = Modifier) {
                 ) {
                     PersonenInfos(
                         username = username,
-                        bio = profiltext,
+                        bio = bio,
                         onUsernameChanged = { username = it },
+                        onBioChanged = { bio = it },
                         context = context
                     )
                 }

@@ -37,22 +37,23 @@ fun PersonenInfos(
     username: String,
     bio: String,
     onUsernameChanged: (String) -> Unit,
+    onBioChanged: (String) -> Unit,
     context: Context
 ) {
-    var isEditing by remember { mutableStateOf(false) }
+    var isEditingUsername by remember { mutableStateOf(false) }
+    var isEditingBio by remember { mutableStateOf(false) }
     var textUsername by remember { mutableStateOf(username) }
     var textBio by remember { mutableStateOf(bio) }
 
     //alles in Spalte
     Column(
         modifier = modifier
-            .padding(8.dp)
+            .padding(20.dp)
     ) {
         //mehrere Dinge nebeneinander
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // links: Profil- oder anderes Bild
@@ -65,7 +66,7 @@ fun PersonenInfos(
             )
 
             //Freiraum
-            Spacer(modifier = Modifier.width(20.dp))
+            Spacer(modifier = Modifier.width(30.dp))
 
             // mitte: Senkrechter Strich als visuelle Trennung
             Image(
@@ -78,12 +79,12 @@ fun PersonenInfos(
             )
 
             //Freiraum
-            Spacer(modifier = Modifier.width(20.dp))
+            Spacer(modifier = Modifier.width(30.dp))
 
             // rechts: Mehrere Text-Zeilen untereinander
             Column {
                 //Username
-                if (isEditing) {
+                if (isEditingUsername) {
                     TextField(
                         value = textUsername,
                         onValueChange = {
@@ -91,12 +92,11 @@ fun PersonenInfos(
                             onUsernameChanged(it) // Hochmelden, z.B. Parent State aktualisieren
                         },
                         singleLine = true,
-                        modifier = Modifier
-                            .padding(8.dp),
+                        modifier = Modifier,
                         keyboardOptions = KeyboardOptions.Default,
                         keyboardActions = KeyboardActions(
                             onDone = {
-                                isEditing = false
+                                isEditingUsername = false
                                 saveInfosOnPhone(
                                     context,
                                     textUsername,
@@ -110,8 +110,7 @@ fun PersonenInfos(
                     Text(
                         text = "@" + textUsername,
                         modifier = Modifier
-                            .clickable { isEditing = true }
-                            .padding(8.dp),
+                            .clickable { isEditingUsername = true },
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -122,11 +121,38 @@ fun PersonenInfos(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //Text
-                Text(
-                    text = bio,
-                    fontSize = 16.sp,
-                    color = Color.LightGray
-                )
+                if (isEditingBio) {
+                    TextField(
+                        value = textBio,
+                        onValueChange = {
+                            textBio = it
+                            onBioChanged(it) // Hochmelden, z.B. Parent State aktualisieren
+                        },
+                        singleLine = true,
+                        modifier = Modifier,
+                        keyboardOptions = KeyboardOptions.Default,
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                isEditingBio = false
+                                saveInfosOnPhone(
+                                    context,
+                                    textUsername,
+                                    textBio
+                                )
+                                onUsernameChanged(textBio)
+                            }
+                        )
+                    )
+                } else {
+                    Text(
+                        text = textBio,
+                        modifier = Modifier
+                            .clickable { isEditingBio = true },
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
