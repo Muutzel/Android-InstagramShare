@@ -1,24 +1,13 @@
 package com.example.instagramshare
 
 import android.content.Context
-import com.example.instagramshare.UserInfos
 import kotlin.text.replace
 import kotlin.text.startsWith
+import androidx.core.content.edit
 
-fun prepareUsername(username: String): String{
-    if(!username.startsWith("@"))
-        return "@$username"
-    else
-        return username
-}
+fun getInstagramLink(username: String, context: Context): String{
 
-fun getSocialmediaLink(domain: String, username: String): String{
-    var result = username;
-
-    if(username.startsWith("@"));
-        result = username.replace("@","");
-
-    return "https://$domain/$result";
+    return "https://${context.getString(R.string.instagram_domain)}/$username"
 }
 
 fun saveInfosOnPhone(
@@ -26,12 +15,12 @@ fun saveInfosOnPhone(
     username: String,
     bio: String
 ) {
-    if(username?.startsWith("@") == true)
+    if(username.startsWith("@"))
         username.replace("@","")
-    
+
     val prefs = context.getSharedPreferences(context.getString(R.string.instagram_share_prefs), Context.MODE_PRIVATE)
-    prefs.edit().putString(context.getString(R.string.instagram_share_pref_username), username).apply()
-    prefs.edit().putString(context.getString(R.string.instagram_share_pref_bio), bio).apply()
+    prefs.edit { putString(context.getString(R.string.instagram_share_pref_username), username) }
+    prefs.edit { putString(context.getString(R.string.instagram_share_pref_bio), bio) }
 }
 
 fun readInfosOnPhone(
@@ -41,12 +30,12 @@ fun readInfosOnPhone(
     var username = prefs.getString(context.getString(R.string.instagram_share_pref_username), "") ?: ""
     var bio = prefs.getString(context.getString(R.string.instagram_share_pref_bio), "") ?: ""
     if(username == "")
-        username = "NAME BEARBEITEN"
-    else if(username?.startsWith("@") == true)
+        username = context.getString(R.string.placeholder_edit_name)
+    else if(username.startsWith("@"))
         username = username.replace("@","")
 
     if(bio == "")
-        bio = "TEXT BEARBEITEN"
+        bio = context.getString(R.string.placeholder_edit_bio)
 
     return UserInfos(username, bio)
 }

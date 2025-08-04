@@ -3,4 +3,7 @@
     <string name="instagram_share_pref_bio">instagram_share_pref_bio</string>
     <string name="instagram_share_pref_username">instagram_share_pref_username</string>
     <string name="instagram_share_prefs">instagram_share_prefs</string>
+    <string name="placeholder_edit_name">NAME BEARBEITEN</string>
+    <string name="placeholder_edit_bio">TEXT BEARBEITEN</string>
+    <string name="instagram_domain">instagram.com</string>
 </resources>

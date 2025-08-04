@@ -108,7 +108,7 @@ fun PersonenInfos(
                     )
                 } else {
                     Text(
-                        text = "@" + textUsername,
+                        text = "@$textUsername",
                         modifier = Modifier
                             .clickable { isEditingUsername = true },
                         color = Color.White,
