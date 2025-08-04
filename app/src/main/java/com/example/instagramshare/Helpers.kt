@@ -6,20 +6,27 @@ import com.example.instagramshare.R
 import kotlin.text.replace
 import kotlin.text.startsWith
 
-fun PrepareUsername(username: String): String{
-    if(!username.startsWith("@"))
+fun prepareUsername(username: String): String{
+    if(username?.startsWith("@") == false)
         return "@$username"
     else
         return username
 }
 
-fun GetSocialmediaLink(domain: String, username: String): String{
-    var result = username;
+fun getSocialmediaLink(
+    domain: String = R.string.device_storage_prefs_instagram_domain.toString(),
+    username: String
+): String{
+    var resultUsername = username;
+    var resultDomain = domain;
 
-    if(username.startsWith("@"));
-        result = username.replace("@","");
+    if(username?.startsWith("@") == true);
+    resultUsername = username.replace("@","");
 
-    return "https://$domain/$result";
+    if(!domain.startsWith("https//"))
+        resultDomain = "https://$resultDomain"
+
+    return "$resultDomain/$resultUsername";
 }
 
 fun saveInfosOnPhone(
@@ -37,8 +44,8 @@ fun readInfosFromDevice(context: Context) {
 
     if(username == "")
         username = "NAME BEARBEITEN"
-    else if(!username.startsWith("@"))
-        username = "@" + username
+    else
+        username = prepareUsername(username)
 
     if(bio == "")
         bio = "TEXT BEARBEITEN"

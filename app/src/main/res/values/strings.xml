@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Instagram Share</string>
     <string name="device_storage_prefs">instagram_prefs</string>
+    <string name="device_storage_prefs_instagram_domain">instagram.com</string>
     <string name="device_storage_pref_instagram_username">instagram_pref_username</string>
     <string name="device_storage_pref_instagram_bio">instagram_bio</string>
 </resources>
