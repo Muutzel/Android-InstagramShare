@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,12 +43,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.instagramshare.helpers.readInfosFromDevice
-import com.example.instagramshare.helpers.saveInfosOnPhone
 import com.example.instagramshare.ui.theme.InstagramShareTheme
 
 class MainActivity : ComponentActivity() {
@@ -59,10 +60,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val context = LocalContext.current
-
-                    readInfosFromDevice(context = context)
-
                     ContentInSurface(
                         modifier = Modifier
                             .fillMaxSize()
@@ -87,7 +84,13 @@ fun ContentInSurface(modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
     //Daten initial holen
+    val usernameInitial = readInfosOnPhone(context).username
+    val profiltextInitial = readInfosOnPhone(context).bio
     val imageQr = painterResource(R.drawable.marcel_892__qr_orange)
+
+    //Daten in Variable speichern, die sich mit der Zeit verändern
+    var username by rememberSaveable { mutableStateOf(usernameInitial) }
+    var profiltext by rememberSaveable { mutableStateOf(profiltextInitial) }
 
     //Box 1: Hintergrund
     Box(
@@ -96,96 +99,81 @@ fun ContentInSurface(modifier: Modifier = Modifier) {
             .background(Color.Black)
     )
 
-    QrAndTexts(imageQr,context)
-}
+    // Box 2 qrCode und Box 3 Infos – je nach Ausrichtung
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-@Composable
-fun PersonenInfos(
-    modifier: Modifier = Modifier,
-    context: Context
-) {
-    var isEditing by remember { mutableStateOf(false) }
-
-    //alles in Spalte
-    Column(
-        modifier = modifier
-            .padding(8.dp)
-    ) {
-        //mehrere Dinge nebeneinander
-        Row(
+    //ausrichtung Gerät
+    if (isPortrait) {
+        // Im Portrait: untereinander als Spalte
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()            // nimmt die gesamte Fläche ein
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Center,     // vertikale Zentrierung
+            horizontalAlignment = Alignment.CenterHorizontally // horizontale Zentrierung
         ) {
-            // links: Profil- oder anderes Bild
+            //qrCode als Bild
             Image(
-                painter = painterResource(R.drawable.psx_20181008_100739),
+                painter = imageQr,
                 contentDescription = null,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .height(230.dp)
+                    .clip(RoundedCornerShape(16.dp))
             )
 
-            //Freiraum
-            Spacer(modifier = Modifier.width(20.dp))
+            //unsichtbare Trennung
+            Spacer(modifier = Modifier.height(50.dp))
 
-            // mitte: Senkrechter Strich als visuelle Trennung
-            Image(
-                painter = painterResource(R.drawable.strich),
-                contentDescription = null,
-                modifier = Modifier
-                    //.size(60.dp)
-                    .height(150.dp)
-                    .rotate(180F)
+            //Infos
+            PersonenInfos(
+                username = username,
+                bio = profiltext,
+                onUsernameChanged = { username = it },
+                context = context
             )
-
-            //Freiraum
-            Spacer(modifier = Modifier.width(20.dp))
-
-            // rechts: Mehrere Text-Zeilen untereinander
-            Column {
-                //Username
-                if (isEditing) {
-                    TextField(
-                        value = AppGlobals.UserInfos.username,
-                        onValueChange = {
-                            AppGlobals.UserInfos.username = it
-                        },
-                        singleLine = true,
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = imageQr,
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .padding(8.dp),
-                        keyboardOptions = KeyboardOptions.Default,
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                isEditing = false
-                                saveInfosOnPhone(
-                                    context
-                                )
-                            }
-                        )
-                    )
-                } else {
-                    Text(
-                        text = AppGlobals.UserInfos.username,
-                        modifier = Modifier
-                            .clickable { isEditing = true }
-                            .padding(8.dp),
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                            .height(230.dp)
+                            .clip(RoundedCornerShape(16.dp))
                     )
                 }
 
-                //freiraum
-                Spacer(modifier = Modifier.height(8.dp))
-
-                //Bio
-                Text(
-                    text = AppGlobals.UserInfos.bio,
-                    fontSize = 16.sp,
-                    color = Color.LightGray
-                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    PersonenInfos(
+                        username = username,
+                        bio = profiltext,
+                        onUsernameChanged = { username = it },
+                        context = context
+                    )
+                }
             }
         }
     }

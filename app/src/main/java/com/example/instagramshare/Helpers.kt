@@ -1,55 +1,52 @@
-package com.example.instagramshare.helpers
+package com.example.instagramshare
 
 import android.content.Context
-import com.example.instagramshare.AppGlobals
-import com.example.instagramshare.R
+import com.example.instagramshare.UserInfos
 import kotlin.text.replace
 import kotlin.text.startsWith
 
 fun prepareUsername(username: String): String{
-    if(username?.startsWith("@") == false)
+    if(!username.startsWith("@"))
         return "@$username"
     else
         return username
 }
 
-fun getSocialmediaLink(
-    domain: String = R.string.device_storage_prefs_instagram_domain.toString(),
-    username: String
-): String{
-    var resultUsername = username;
-    var resultDomain = domain;
+fun getSocialmediaLink(domain: String, username: String): String{
+    var result = username;
 
-    if(username?.startsWith("@") == true);
-    resultUsername = username.replace("@","");
+    if(username.startsWith("@"));
+        result = username.replace("@","");
 
-    if(!domain.startsWith("https//"))
-        resultDomain = "https://$resultDomain"
-
-    return "$resultDomain/$resultUsername";
+    return "https://$domain/$result";
 }
 
 fun saveInfosOnPhone(
-    context: Context
+    context: Context,
+    username: String,
+    bio: String
 ) {
-    val prefs = context.getSharedPreferences(R.string.device_storage_prefs.toString(), Context.MODE_PRIVATE)
-    prefs.edit().putString(R.string.device_storage_pref_instagram_username.toString(), AppGlobals.UserInfos.username).apply()
-    prefs.edit().putString(R.string.device_storage_pref_instagram_bio.toString(), AppGlobals.UserInfos.bio).apply()
+    if(username?.startsWith("@") == true)
+        username.replace("@","")
+    
+    val prefs = context.getSharedPreferences(context.getString(R.string.instagram_share_prefs), Context.MODE_PRIVATE)
+    prefs.edit().putString(context.getString(R.string.instagram_share_pref_username), username).apply()
+    prefs.edit().putString(context.getString(R.string.instagram_share_pref_bio), bio).apply()
 }
 
-fun readInfosFromDevice(context: Context) {
-    val prefs = context.getSharedPreferences(R.string.device_storage_prefs.toString(), Context.MODE_PRIVATE)
-    var username = prefs.getString(R.string.device_storage_pref_instagram_username.toString(), "") ?: ""
-    var bio = prefs.getString(R.string.device_storage_pref_instagram_bio.toString(), "") ?: ""
-
+fun readInfosOnPhone(
+    context: Context
+): UserInfos {
+    val prefs = context.getSharedPreferences(context.getString(R.string.instagram_share_prefs), Context.MODE_PRIVATE)
+    var username = prefs.getString(context.getString(R.string.instagram_share_pref_username), "") ?: ""
+    var bio = prefs.getString(context.getString(R.string.instagram_share_pref_bio), "") ?: ""
     if(username == "")
         username = "NAME BEARBEITEN"
-    else
-        username = prepareUsername(username)
+    else if(username?.startsWith("@") == true)
+        username = username.replace("@","")
 
     if(bio == "")
         bio = "TEXT BEARBEITEN"
 
-    AppGlobals.UserInfos.username = username;
-    AppGlobals.UserInfos.bio = bio;
+    return UserInfos(username, bio)
 }
