@@ -188,16 +188,17 @@ fun GenerateQrCode(username: String, context: Context) {
         modifier = Modifier
             .size(300.dp)
             .clip(RoundedCornerShape(24.dp)) // Rundung an den Kanten, z.B. 24.dp
-            .background(Color.Black),
+            .background(Color.White),
         contentAlignment = Alignment.Center
     )
     {
         QrCodeView(
             data = getInstagramLink(username,context),
-            modifier = Modifier.size(260.dp),
+            modifier = Modifier
+                .size(260.dp),
             colors = QrCodeColors(
-                background = Color.Black,
-                foreground = Color.White
+                background = Color.White,
+                foreground = Color.Gray
             ),
             dotShape = DotShape.Circle
         )
