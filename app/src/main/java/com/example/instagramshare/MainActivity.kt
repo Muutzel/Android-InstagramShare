@@ -1,6 +1,5 @@
 package com.example.instagramshare
 
-import android.R
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
@@ -31,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.instagramshare.ui.theme.InstagramShareTheme
@@ -44,10 +42,10 @@ import java.util.EnumMap
 import android.graphics.Paint
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringArrayResource
 import com.lightspark.composeqr.DotShape
 import com.lightspark.composeqr.QrCodeColors
 import com.lightspark.composeqr.QrCodeView
+import androidx.core.graphics.createBitmap
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -247,7 +245,7 @@ fun GenerateQrCode2(username: String, context: Context) {
     val moduleSize = targetSizePx / moduleCount.toFloat()
 
 
-    val bitmap = Bitmap.createBitmap(targetSizePx, targetSizePx, Bitmap.Config.ARGB_8888)
+    val bitmap = createBitmap(targetSizePx, targetSizePx)
     val canvas = Canvas(bitmap)
 
     val radius = moduleSize / (2f * 0.5f)
