@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -117,7 +118,7 @@ fun PersonenInfos(
                 }
 
                 //freiraum
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 //Text
                 if (isEditingBio) {
@@ -127,28 +128,26 @@ fun PersonenInfos(
                             textBio = it
                             onBioChanged(it) // Hochmelden, z.B. Parent State aktualisieren
                         },
-                        singleLine = true,
+                        singleLine = false,
                         modifier = Modifier,
-                        keyboardOptions = KeyboardOptions.Default,
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                isEditingBio = false
-                                saveInfosOnPhone(
-                                    context,
-                                    textUsername,
-                                    textBio
-                                )
-                            }
-                        )
+                        keyboardOptions = KeyboardOptions.Default
                     )
+                    Button(
+                        onClick = {
+                            isEditingBio = false
+                            saveInfosOnPhone(context, textUsername, textBio)
+                            //onBioChanged(textBio) // Jetzt hochmelden; falls im Parent gespeichert wird
+                        }
+                    ) {
+                        Text("Speichern")
+                    }
                 } else {
                     Text(
                         text = textBio,
                         modifier = Modifier
                             .clickable { isEditingBio = true },
                         color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 16.sp
                     )
                 }
             }
