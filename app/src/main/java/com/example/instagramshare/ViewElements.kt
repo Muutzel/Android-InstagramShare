@@ -102,7 +102,6 @@ fun PersonenInfos(
                                     textUsername,
                                     textBio
                                 )
-                                onUsernameChanged(textUsername)
                             }
                         )
                     )
@@ -139,7 +138,6 @@ fun PersonenInfos(
                                     textUsername,
                                     textBio
                                 )
-                                onUsernameChanged(textBio)
                             }
                         )
                     )

@@ -29,6 +29,7 @@ fun readInfosOnPhone(
     val prefs = context.getSharedPreferences(context.getString(R.string.instagram_share_prefs), Context.MODE_PRIVATE)
     var username = prefs.getString(context.getString(R.string.instagram_share_pref_username), "") ?: ""
     var bio = prefs.getString(context.getString(R.string.instagram_share_pref_bio), "") ?: ""
+
     if(username == "")
         username = context.getString(R.string.placeholder_edit_name)
     else if(username.startsWith("@"))
