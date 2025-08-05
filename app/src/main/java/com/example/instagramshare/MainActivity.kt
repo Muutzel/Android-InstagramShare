@@ -1,6 +1,7 @@
 package com.example.instagramshare
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -40,6 +41,8 @@ import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.EncodeHintType
 import java.util.EnumMap
 import android.graphics.Paint
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import com.lightspark.composeqr.DotShape
@@ -191,7 +194,9 @@ fun GenerateQrCode1(username: String, context: Context) {
         modifier = Modifier
             .size(300.dp)
             .clip(RoundedCornerShape(24.dp)) // Rundung an den Kanten, z.B. 24.dp
-            .background(Color.White),
+            .background(Color.White)
+            .clickable{val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getInstagramLink(username,context)))
+                context.startActivity(intent)},
         contentAlignment = Alignment.Center
     )
     {
@@ -280,5 +285,9 @@ fun GenerateQrCode2(username: String, context: Context) {
         contentDescription = null,
         modifier = Modifier
             .size(320.dp)
+            .clickable {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getInstagramLink(username,context)))
+            context.startActivity(intent)
+        }
     )
 }
