@@ -1,3 +1,9 @@
-# Android-InstagramShare
-A small Android app that serves as a business card at cosplay meetups.
-After entering your username, picture, and QR code, you can access it at any time and quickly show it like a business card.
+# Instagram Share
+A small Android app that serves as a business card for an Instagram account.
+
+## How to use the app
+
+1. Tap on the texts on the right side one after the other and enter your Instagram username and a short description.<br>
+As soon as the username is changed, a QR code linking to the Instagram account will be generated.
+
+2. Select an image.
