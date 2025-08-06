@@ -201,11 +201,10 @@ fun GenerateQrCode(username: String, context: Context) {
     Box(
         modifier = Modifier
             .size(320.dp)
-            .background(Color.White)
-            .clip(RoundedCornerShape(25.dp)),
+            .clip(RoundedCornerShape(25.dp))
+            .background(Color.Black),
         contentAlignment = Alignment.Center
-    )
-    {
+    ) {
         Image(
             painter = painter,
             contentDescription = null,

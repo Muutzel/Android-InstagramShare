@@ -56,4 +56,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
+    implementation("io.coil-kt:coil-compose:2.2.2")
 }
