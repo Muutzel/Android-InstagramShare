@@ -34,21 +34,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.instagramshare.ui.theme.InstagramShareTheme
-import android.graphics.*
-import androidx.compose.ui.graphics.asImageBitmap
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.qrcode.QRCodeWriter
-import com.google.zxing.EncodeHintType
-import java.util.EnumMap
-import android.graphics.Paint
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
-import com.lightspark.composeqr.DotShape
-import com.lightspark.composeqr.QrCodeColors
-import com.lightspark.composeqr.QrCodeView
-import androidx.core.graphics.createBitmap
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import io.github.alexzhirkevich.qrose.options.QrBallShape
+import io.github.alexzhirkevich.qrose.options.QrBrush
+import io.github.alexzhirkevich.qrose.options.QrColors
+import io.github.alexzhirkevich.qrose.options.QrFrameShape
+import io.github.alexzhirkevich.qrose.options.QrLogo
+import io.github.alexzhirkevich.qrose.options.QrLogoPadding
+import io.github.alexzhirkevich.qrose.options.QrLogoShape
+import io.github.alexzhirkevich.qrose.options.QrPixelShape
+import io.github.alexzhirkevich.qrose.options.QrShapes
+import io.github.alexzhirkevich.qrose.options.brush
+import io.github.alexzhirkevich.qrose.options.circle
+import io.github.alexzhirkevich.qrose.options.roundCorners
+import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,24 +116,7 @@ fun ContentInSurface() {
             horizontalAlignment = Alignment.CenterHorizontally // horizontale Zentrierung
         ) {
             //qrCode als Bild
-            GenerateQrCode2(username,context)
-//            Image(
-//                painter = rememberQrCodePainter(
-//                    getInstagramLink(username,context),
-//                    shapes = QrShapes(
-//                        darkPixel = QrPixelShape.roundCorners() // für runde "Punkte"
-//                    ),
-//                    colors = QrColors(
-//                        dark = QrBrush.solid(Color.Magenta),
-//                        light = QrBrush.solid(Color.White)
-//                    )
-//                ),
-//                contentDescription = null,
-//                contentScale = ContentScale.Fit,
-//                modifier = Modifier
-//                    .height(230.dp)
-//                    //.clip(RoundedCornerShape(16.dp))
-//            )
+            GenerateQrCode(username,context)
 
             //unsichtbare Trennung
             Spacer(modifier = Modifier.height(50.dp))
@@ -158,15 +147,7 @@ fun ContentInSurface() {
                         .fillMaxHeight(),
                     contentAlignment = Alignment.Center
                 ) {
-                    GenerateQrCode1(username,context)
-//                    Image(
-//                        painter = imageQr,
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Fit,
-//                        modifier = Modifier
-//                            .height(230.dp)
-//                            .clip(RoundedCornerShape(16.dp))
-//                    )
+                    GenerateQrCode(username,context)
                 }
 
                 Box(
@@ -188,106 +169,50 @@ fun ContentInSurface() {
     }
 }
 
+
 @Composable
-fun GenerateQrCode1(username: String, context: Context) {
+fun GenerateQrCode(username: String, context: Context) {
+    val logoPainter : Painter = painterResource(R.drawable.camera_orange)
+
+    val painter = rememberQrCodePainter(
+        data = getInstagramLink(username, context),
+        logo = QrLogo(
+            painter = logoPainter,
+            padding = QrLogoPadding.Natural(.1f),
+            shape = QrLogoShape.circle(),
+            size = 0.2f
+        ),
+        shapes = QrShapes(
+            ball = QrBallShape.circle(),
+            darkPixel = QrPixelShape.circle(0.7f),
+            frame = QrFrameShape.roundCorners(.25f)
+        ),
+        colors = QrColors(
+            dark = QrBrush.brush { sizePx ->
+                Brush.linearGradient(
+                    listOf(Color(0xFFFFA500), Color.Red),
+                    start = Offset(0f, 0f),
+                    end = Offset(sizePx, sizePx)
+                )
+            }
+        )
+    )
+
     Box(
         modifier = Modifier
-            .size(300.dp)
-            .clip(RoundedCornerShape(24.dp)) // Rundung an den Kanten, z.B. 24.dp
+            .size(320.dp)
             .background(Color.White)
-            .clickable{val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getInstagramLink(username,context)))
-                context.startActivity(intent)},
+            .clip(RoundedCornerShape(25.dp)),
         contentAlignment = Alignment.Center
     )
     {
-        QrCodeView(
-            data = getInstagramLink(username,context),
+        Image(
+            painter = painter,
+            contentDescription = null,
             modifier = Modifier
-                .size(260.dp),
-            colors = QrCodeColors(
-                background = Color.White,
-                foreground = Color.DarkGray
-            ),
-            dotShape = DotShape.Circle
+                .size(280.dp)
+                .clickable{val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getInstagramLink(username,context)))
+                    context.startActivity(intent)}
         )
-//        {
-//            Box(
-//                modifier = Modifier
-//                    .size(56.dp) // Größe des leeren Bereichs
-//                    .background(Color.White) // Oder Color.Transparent für transparenten Bereich
-//            )
-//        }
     }
-//
-    //                    Image(
-//                        painter = imageQr,
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Fit,
-//                        modifier = Modifier
-//                            .height(230.dp)
-//                            .clip(RoundedCornerShape(16.dp))
-//                    )
-}
-
-@Composable
-fun GenerateQrCode2(username: String, context: Context) {
-    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    paint.style = Paint.Style.FILL
-    paint.strokeJoin = Paint.Join.ROUND
-    paint.strokeCap = Paint.Cap.ROUND
-    paint.isDither = true
-
-    val qrCodeWriter = QRCodeWriter()
-
-    val hints = EnumMap<EncodeHintType, Any>(EncodeHintType::class.java).apply {
-        put(EncodeHintType.MARGIN, 0)
-        put(EncodeHintType.CHARACTER_SET, "UTF-8")
-    }
-
-    val targetSizePx = 320
-    val bitMatrix = qrCodeWriter.encode(getInstagramLink(username,context), BarcodeFormat.QR_CODE, targetSizePx, targetSizePx, hints)
-    val moduleCount = bitMatrix.width
-    val moduleSize = targetSizePx / moduleCount.toFloat()
-
-
-    val bitmap = createBitmap(targetSizePx, targetSizePx)
-    val canvas = Canvas(bitmap)
-
-    val radius = moduleSize / (2f * 0.5f)
-    //val radius = 0.05f
-
-    for (y in 0 until moduleCount) {
-        for (x in 0 until moduleCount) {
-            if (bitMatrix.get(x, y)) {
-                val tX = x.toFloat() / (moduleCount - 1)
-                val tY = y.toFloat() / (moduleCount - 1)
-                val t = (tX + tY) / 2f
-
-                // Beispiel: kräftigeres Gelb zu Rot
-                val red = 255
-                val green = (180 * (1 - t)).toInt()
-                val blue = (60 * t).toInt()
-
-                paint.color = android.graphics.Color.argb(255, red, green, blue)
-                //paint.color = android.graphics.Color.rgb(255,255,255)
-
-                val cx = (x + 0.5f) * moduleSize
-                val cy = (y + 0.5f) * moduleSize
-
-                //canvas.drawCircle(cx, cy, radius, paint)
-                canvas.drawCircle(cx, cy, radius, paint)
-            }
-        }
-    }
-
-    Image(
-        bitmap.asImageBitmap(),
-        contentDescription = null,
-        modifier = Modifier
-            .size(320.dp)
-            .clickable {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getInstagramLink(username,context)))
-            context.startActivity(intent)
-        }
-    )
 }
