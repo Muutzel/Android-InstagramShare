@@ -55,6 +55,7 @@ import io.github.alexzhirkevich.qrose.options.brush
 import io.github.alexzhirkevich.qrose.options.circle
 import io.github.alexzhirkevich.qrose.options.roundCorners
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
+import androidx.core.net.toUri
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -190,7 +191,9 @@ fun GenerateQrCode(username: String, context: Context) {
         colors = QrColors(
             dark = QrBrush.brush { sizePx ->
                 Brush.linearGradient(
-                    listOf(Color(0xFFFFA500), Color.Red),
+                    listOf(
+                        Color(0xFFFFD500),
+                        Color(0xFFFF3C00)),
                     start = Offset(0f, 0f),
                     end = Offset(sizePx, sizePx)
                 )
@@ -210,7 +213,8 @@ fun GenerateQrCode(username: String, context: Context) {
             contentDescription = null,
             modifier = Modifier
                 .size(280.dp)
-                .clickable{val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getInstagramLink(username,context)))
+                .clickable{val intent = Intent(Intent.ACTION_VIEW,
+                    getInstagramLink(username, context).toUri())
                     context.startActivity(intent)}
         )
     }
