@@ -107,7 +107,7 @@ fun PersonenInfos(
             }
 
             //Freiraum
-            Spacer(modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(20.dp))
 
             // mitte: Senkrechter Strich als visuelle Trennung
             Box(
@@ -123,7 +123,7 @@ fun PersonenInfos(
             )
 
             //Freiraum
-            Spacer(modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(20.dp))
 
             // rechts: Mehrere Text-Zeilen untereinander
             Column {
