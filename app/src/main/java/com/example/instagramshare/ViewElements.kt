@@ -113,7 +113,7 @@ fun PersonenInfos(
             Box(
                 modifier = modifier
                     .height(150.dp)
-                    .width(5.dp)
+                    .width(3.dp)
                     .background(Brush.linearGradient(
                         listOf(
                             Color(0xFFFF3C00),
