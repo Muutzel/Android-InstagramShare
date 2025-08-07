@@ -2,6 +2,7 @@ package com.example.instagramshare
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,11 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun PersonenInfos(
@@ -91,11 +93,17 @@ fun PersonenInfos(
                 .clickable { launcher.launch("image/*") })
             {
                 if (imageUri != "") {
-                    Image(
-                        painter = rememberAsyncImagePainter("file://$imageUri"),
-                        contentDescription = "Profilbild von $username",
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    val bitmap = remember(imageUri) {
+                        BitmapFactory.decodeFile(imageUri)?.asImageBitmap()
+                    }
+
+                    bitmap?.let {
+                        Image(
+                            painter = BitmapPainter(it),
+                            contentDescription = "Profilbild von $username",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 } else {
                     // Platzhalterbild anzeigen
                     Image(
